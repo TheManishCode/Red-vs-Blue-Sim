@@ -1,0 +1,4 @@
+User-agent: *
+# Agents, please report to your designated entry point.
+# All other traffic is unauthorized.
+Disallow: /secret-login-portal

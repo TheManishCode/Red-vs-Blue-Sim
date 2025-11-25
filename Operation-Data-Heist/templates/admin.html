@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureCorp - MAINFRAME ACCESS</title>
+    <style>
+        :root {
+            --background: #0d1117;
+            --foreground: #c9d1d9;
+            --green: #28a745;
+            --blue: #58a6ff;
+            --red: #da3633;
+        }
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: var(--background);
+            color: var(--foreground);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        #terminal {
+            width: 100%;
+            max-width: 800px;
+            height: 500px;
+            background-color: #010409;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        #output {
+            flex-grow: 1;
+            padding: 10px;
+            overflow-y: auto;
+            font-size: 1em;
+            line-height: 1.4;
+        }
+        .input-line {
+            display: flex;
+            padding: 5px 10px;
+            background-color: #161b22;
+            border-top: 1px solid #30363d;
+        }
+        .prompt {
+            color: var(--green);
+            margin-right: 10px;
+        }
+        #input {
+            background: none;
+            border: none;
+            color: var(--foreground);
+            font-family: inherit;
+            font-size: inherit;
+            flex-grow: 1;
+        }
+        #input:focus {
+            outline: none;
+        }
+        .command {
+            color: var(--blue);
+        }
+        .error {
+            color: var(--red);
+        }
+    </style>
+</head>
+<body>
+    <div id="terminal">
+        <div id="output"></div>
+        <div class="input-line">
+            <span class="prompt">&gt;</span>
+            <input type="text" id="input" autofocus />
+        </div>
+    </div>
+
+    <script>
+        const output = document.getElementById('output');
+        const input = document.getElementById('input');
+        const terminal = document.getElementById('terminal');
+
+        const commands = {
+            help: `Available commands:
+    <span class="command">help</span>    - Shows this list of commands.
+    <span class="command">ls</span>      - Lists files in the current directory.
+    <span class="command">cat</span>     - Displays the content of a file.
+    <span class="command">clear</span>   - Clears the terminal screen.`,
+            ls: `
+-rw-r--r--   1 admin  staff    2.1K  Nov 25 00:00  system_log.txt
+-rwx------   1 admin  staff    1.2M  Nov 25 00:03  kernel_data.bin
+-rw-rw-r--   1 admin  staff     128B Nov 25 00:04  <span class="command">secret.txt</span>
+            `,
+            cat: {
+                'secret.txt': `
+// Why do programmers prefer dark mode?
+// Because light attracts bugs.
+
+Congratulations, Agent. Mission Accomplished.
+                `
+            },
+            clear: () => {
+                output.innerHTML = '';
+            },
+        };
+
+        const print = (message, isCommand = false) => {
+            const line = document.createElement('div');
+            if (isCommand) {
+                line.innerHTML = `<span class="prompt">&gt;</span> ${message}`;
+            } else {
+                line.innerHTML = message;
+            }
+            output.appendChild(line);
+            terminal.scrollTop = terminal.scrollHeight;
+        };
+
+        const execute = (command) => {
+            print(command, true);
+            const [cmd, arg] = command.trim().split(' ');
+
+            if (commands[cmd]) {
+                const result = commands[cmd];
+                if (typeof result === 'function') {
+                    result();
+                } else if (typeof result === 'object' && arg) {
+                    if (result[arg]) {
+                        print(`<pre>${result[arg]}</pre>`);
+                    } else {
+                        print(`<div class="error">cat: ${arg}: No such file or directory</div>`);
+                    }
+                } else if (typeof result === 'object') {
+                     print(`<div class="error">${cmd}: Missing argument.</div>`);
+                }
+                else {
+                    print(result);
+                }
+            } else {
+                print(`<div class="error">Command not found: ${command}. Type 'help' for a list of commands.</div>`);
+            }
+        };
+
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const command = input.value;
+                input.value = '';
+                if (command.trim() === '') return;
+                execute(command);
+            }
+        });
+
+        // Initial welcome message
+        print('Connecting to SecureCorp Mainframe...');
+        setTimeout(() => {
+            print('Connection established. Bypassing security protocols...');
+        }, 1000);
+        setTimeout(() => {
+            print('Authentication successful. Welcome, ADMIN.');
+            print('<br>');
+            print("Type '<span class='command'>help</span>' to see a list of available commands.");
+        }, 2000);
+    </script>
+</body>
+</html>
