@@ -1,0 +1,25 @@
+{
+  "title": "Red-vs-Blue-Sim: Ethical Hacking Playground",
+  "description": "An interactive, educational environment designed to teach fundamental cybersecurity concepts. The suite includes 'Digital-Safecracker,' a multi-threaded Python brute-force tool, and 'Operation-Data-Heist,' a vulnerable Flask web application used to demonstrate reconnaissance, password attacks, and privilege escalation.",
+  "categories": [
+    "secumilate"
+  ],
+  "status": "maintained",
+  "priority": 1,
+  "tags": [
+    "ethical-hacking",
+    "cybersecurity-education",
+    "brute-force-simulation",
+    "web-vulnerabilities",
+    "red-vs-blue"
+  ],
+  "techStack": [
+    "Python 3",
+    "Flask",
+    "Requests",
+    "HTML5/CSS3",
+    "Concurrent-Futures"
+  ],
+  "type": "project",
+  "visibility": true
+}
